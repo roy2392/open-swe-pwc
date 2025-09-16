@@ -31,7 +31,7 @@ import { useState, useMemo } from "react";
 import { threadsToMetadata } from "@/lib/thread-utils";
 import { Settings, BookOpen } from "lucide-react";
 import NextLink from "next/link";
-import { OpenSWELogo } from "../icons/openswe-logo";
+import { PwCLogo } from "../icons/pwc-logo";
 import { OpenSWEIcon } from "../icons/openswe-icon";
 import { DEFAULT_CONFIG_KEY, useConfigStore } from "@/hooks/useConfigStore";
 
@@ -130,10 +130,15 @@ export function DefaultView({ threads, threadsLoading }: DefaultViewProps) {
       <div className="border-border bg-card border-b px-4 py-2">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <OpenSWELogo
-              width={120}
-              height={18}
+            <PwCLogo
+              width={100}
+              height={65}
             />
+          </div>
+          <div className="absolute left-1/2 transform -translate-x-1/2">
+            <h1 className="text-xl font-semibold tracking-tight text-foreground" style={{ fontFamily: 'Arial, Helvetica, sans-serif' }}>
+              PwC Agent Developer Platform
+            </h1>
           </div>
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">

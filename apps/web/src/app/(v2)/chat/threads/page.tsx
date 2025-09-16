@@ -17,7 +17,7 @@ import { useThreadsStatus } from "@/hooks/useThreadsStatus";
 import { cn } from "@/lib/utils";
 import { threadsToMetadata } from "@/lib/thread-utils";
 import { UserPopover } from "@/components/user-popover";
-import { OpenSWELogo } from "@/components/icons/openswe-logo";
+import { PwCLogo } from "@/components/icons/pwc-logo";
 
 type FilterStatus =
   | "all"
@@ -118,20 +118,27 @@ function AllThreadsPageContent() {
     <div className="bg-background flex h-screen flex-col">
       {/* Header */}
       <div className="border-border bg-card border-b px-4 py-3">
-        <div className="flex items-center gap-3">
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-muted-foreground hover:bg-muted hover:text-foreground h-6 w-6 p-0"
-            onClick={() => router.push("/chat")}
-          >
-            <ArrowLeft className="h-3 w-3" />
-          </Button>
-          <div className="flex items-center gap-2">
-            <OpenSWELogo
-              width={120}
-              height={18}
-            />
+        <div className="flex items-center relative">
+          <div className="flex items-center gap-3">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-muted-foreground hover:bg-muted hover:text-foreground h-6 w-6 p-0"
+              onClick={() => router.push("/chat")}
+            >
+              <ArrowLeft className="h-3 w-3" />
+            </Button>
+            <div className="flex items-center gap-2">
+              <PwCLogo
+                width={100}
+                height={65}
+              />
+            </div>
+          </div>
+          <div className="absolute left-1/2 transform -translate-x-1/2">
+            <h1 className="text-xl font-semibold tracking-tight text-foreground" style={{ fontFamily: 'Arial, Helvetica, sans-serif' }}>
+              PwC Agent Developer Platform
+            </h1>
           </div>
           <div className="ml-auto flex items-center gap-4">
             <div className="flex items-center gap-2">
