@@ -15,6 +15,7 @@ import {
   GraphState,
   CacheMetrics,
   ModelTokenData,
+  AgentSession,
 } from "@openswe/shared/open-swe/types";
 import { ActionsRenderer } from "./actions-renderer";
 import { ThemeToggle } from "../theme-toggle";
@@ -26,6 +27,7 @@ import {
   DO_NOT_RENDER_ID_PREFIX,
   PROGRAMMER_GRAPH_ID,
   PLANNER_GRAPH_ID,
+  SECURITY_AUDITOR_GRAPH_ID,
 } from "@openswe/shared/constants";
 import { useThreadStatus } from "@/hooks/useThreadStatus";
 import { cn } from "@/lib/utils";
@@ -59,34 +61,17 @@ interface ThreadViewProps {
 const joinTokenData = (
   plannerTokenData?: CacheMetrics | ModelTokenData[],
   programmerTokenData?: CacheMetrics | ModelTokenData[],
+  securityAuditorTokenData?: CacheMetrics | ModelTokenData[],
 ): ModelTokenData[] | CacheMetrics[] => {
-  if (!plannerTokenData && !programmerTokenData) {
+  const allTokenData = [plannerTokenData, programmerTokenData, securityAuditorTokenData].filter(Boolean);
+
+  if (allTokenData.length === 0) {
     return [];
   }
-  if (plannerTokenData && programmerTokenData) {
-    return [
-      ...(Array.isArray(plannerTokenData)
-        ? plannerTokenData
-        : [plannerTokenData]),
-      ...(Array.isArray(programmerTokenData)
-        ? programmerTokenData
-        : [programmerTokenData]),
-    ];
-  }
 
-  if (plannerTokenData && !programmerTokenData) {
-    return Array.isArray(plannerTokenData)
-      ? plannerTokenData
-      : [plannerTokenData];
-  }
-
-  if (!plannerTokenData && programmerTokenData) {
-    return Array.isArray(programmerTokenData)
-      ? programmerTokenData
-      : [programmerTokenData];
-  }
-
-  return [];
+  return allTokenData.flatMap((tokenData) =>
+    Array.isArray(tokenData) ? tokenData : [tokenData]
+  );
 };
 
 export function ThreadView({
@@ -96,13 +81,15 @@ export function ThreadView({
 }: ThreadViewProps) {
   const { user } = useUser();
   const [chatInput, setChatInput] = useState("");
-  const [selectedTab, setSelectedTab] = useState<"planner" | "programmer">(
+  const [selectedTab, setSelectedTab] = useState<"planner" | "programmer" | "security-auditor">(
     "planner",
   );
   const [plannerSession, setPlannerSession] =
     useState<ManagerGraphState["plannerSession"]>();
   const [programmerSession, setProgrammerSession] =
     useState<ManagerGraphState["programmerSession"]>();
+  const [securityAuditorSession, setSecurityAuditorSession] =
+    useState<AgentSession>();
   const [isTaskSidebarOpen, setIsTaskSidebarOpen] = useState(false);
   const [programmerTaskPlan, setProgrammerTaskPlan] = useState<TaskPlan>();
   const [optimisticMessage, setOptimisticMessage] =
@@ -183,6 +170,9 @@ export function ThreadView({
   const [customProgrammerNodeEvents, setCustomProgrammerNodeEvents] = useState<
     CustomNodeEvent[]
   >([]);
+  const [customSecurityAuditorNodeEvents, setCustomSecurityAuditorNodeEvents] = useState<
+    CustomNodeEvent[]
+  >([]);
 
   const plannerStream = useStream<PlannerGraphState>({
     apiUrl: process.env.NEXT_PUBLIC_API_URL,
@@ -236,6 +226,32 @@ export function ThreadView({
     }
   }, [programmerSession]);
 
+  const securityAuditorStream = useStream<GraphState>({
+    apiUrl: process.env.NEXT_PUBLIC_API_URL,
+    assistantId: SECURITY_AUDITOR_GRAPH_ID,
+    reconnectOnMount: true,
+    threadId: securityAuditorSession?.threadId,
+    onCustomEvent: (event) => {
+      if (isCustomNodeEvent(event)) {
+        setCustomSecurityAuditorNodeEvents((prev) => [...prev, event]);
+      }
+    },
+    fetchStateHistory: false,
+  });
+
+  const joinedSecurityAuditorRunId = useRef<string | undefined>(undefined);
+  useEffect(() => {
+    if (
+      securityAuditorSession?.runId &&
+      securityAuditorSession.runId !== joinedSecurityAuditorRunId.current
+    ) {
+      joinedSecurityAuditorRunId.current = securityAuditorSession.runId;
+      securityAuditorStream.joinStream(securityAuditorSession.runId).catch(console.error);
+    } else if (!securityAuditorSession?.runId) {
+      joinedSecurityAuditorRunId.current = undefined;
+    }
+  }, [securityAuditorSession]);
+
   useEffect(() => {
     if (
       stream?.values?.plannerSession &&
@@ -248,6 +264,15 @@ export function ThreadView({
         setSelectedTab("planner");
       }
     }
+
+    // Note: securityAuditorSession is not part of ManagerGraphState yet
+    // TODO: Add securityAuditorSession to ManagerGraphState in the backend
+    // if (
+    //   stream?.values?.securityAuditorSession &&
+    //   securityAuditorSession?.runId !== stream.values.securityAuditorSession.runId
+    // ) {
+    //   setSecurityAuditorSession(stream.values.securityAuditorSession);
+    // }
   }, [stream?.values]);
 
   useEffect(() => {
@@ -357,7 +382,7 @@ export function ThreadView({
     : filteredMessages;
 
   const shouldDisableManagerInput = !hasGitHubIssue
-    ? stream.isLoading || plannerStream.isLoading || programmerStream.isLoading
+    ? stream.isLoading || plannerStream.isLoading || programmerStream.isLoading || securityAuditorStream.isLoading
     : false;
 
   return (
@@ -408,7 +433,7 @@ export function ThreadView({
           isLoading={stream.isLoading}
           cancelRun={cancelRun}
           errorState={errorState}
-          canRestartRun={Boolean(plannerStream.error || programmerStream.error)}
+          canRestartRun={Boolean(plannerStream.error || programmerStream.error || securityAuditorStream.error)}
           managerThreadId={displayThread.id}
           plannerThreadId={plannerSession?.threadId}
           programmerThreadId={programmerSession?.threadId}
@@ -426,13 +451,14 @@ export function ThreadView({
               className="flex h-full w-full flex-col"
               value={selectedTab}
               onValueChange={(value) =>
-                setSelectedTab(value as "planner" | "programmer")
+                setSelectedTab(value as "planner" | "programmer" | "security-auditor")
               }
             >
               <div className="flex flex-shrink-0 items-center gap-3">
                 <TabsList className="bg-muted/70">
                   <TabsTrigger value="planner">Planner</TabsTrigger>
                   <TabsTrigger value="programmer">Programmer</TabsTrigger>
+                  <TabsTrigger value="security-auditor">Security Auditor</TabsTrigger>
                 </TabsList>
 
                 {programmerTaskPlan && (
@@ -461,10 +487,21 @@ export function ThreadView({
                         streamName="Programmer"
                       />
                     )}
+
+                  {selectedTab === "security-auditor" &&
+                    securityAuditorStream.isLoading && (
+                      <CancelStreamButton
+                        stream={securityAuditorStream}
+                        threadId={securityAuditorSession?.threadId}
+                        runId={securityAuditorSession?.runId}
+                        streamName="Security Auditor"
+                      />
+                    )}
                   <TokenUsage
                     tokenData={joinTokenData(
                       plannerStream.values.tokenData,
                       programmerStream.values.tokenData,
+                      securityAuditorStream.values.tokenData,
                     )}
                   />
                 </div>
@@ -580,6 +617,52 @@ export function ThreadView({
                                 <Clock className="text-muted-foreground size-4" />
                                 <span className="text-muted-foreground text-sm">
                                   No programmer session
+                                </span>
+                              </div>
+                            )}
+                          </>
+                        }
+                        footer={
+                          <div className="absolute right-0 bottom-4 left-0 flex w-full justify-center">
+                            <ScrollToBottom className="animate-in fade-in-0 zoom-in-95" />
+                          </div>
+                        }
+                      />
+                    </StickToBottom>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+              <TabsContent
+                value="security-auditor"
+                className="mb-2"
+              >
+                <Card className="border-border bg-card relative h-full p-0">
+                  <CardContent className="h-full p-0">
+                    <StickToBottom
+                      className="absolute inset-0 h-full"
+                      initial={true}
+                    >
+                      <StickyToBottomContent
+                        className="scrollbar-pretty-auto h-full"
+                        content={
+                          <>
+                            {securityAuditorSession ? (
+                              <div className="scrollbar-pretty-auto overflow-y-auto px-2">
+                                <ActionsRenderer<GraphState>
+                                  runId={securityAuditorSession.runId}
+                                  customNodeEvents={customSecurityAuditorNodeEvents}
+                                  setCustomNodeEvents={
+                                    setCustomSecurityAuditorNodeEvents
+                                  }
+                                  stream={securityAuditorStream}
+                                  threadId={securityAuditorSession.threadId}
+                                />
+                              </div>
+                            ) : (
+                              <div className="flex items-center justify-center gap-2 py-8">
+                                <Clock className="text-muted-foreground size-4" />
+                                <span className="text-muted-foreground text-sm">
+                                  No security auditor session
                                 </span>
                               </div>
                             )}

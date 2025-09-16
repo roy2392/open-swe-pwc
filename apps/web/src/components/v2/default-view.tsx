@@ -80,9 +80,10 @@ function OpenDocumentationButton() {
 interface DefaultViewProps {
   threads: Thread<ManagerGraphState>[];
   threadsLoading: boolean;
+  hideHeader?: boolean;
 }
 
-export function DefaultView({ threads, threadsLoading }: DefaultViewProps) {
+export function DefaultView({ threads, threadsLoading, hideHeader = false }: DefaultViewProps) {
   const router = useRouter();
   const [quickActionPrompt, setQuickActionPrompt] = useState("");
   const apiUrl: string | undefined = process.env.NEXT_PUBLIC_API_URL ?? "";
@@ -127,31 +128,33 @@ export function DefaultView({ threads, threadsLoading }: DefaultViewProps) {
   return (
     <div className="flex flex-1 flex-col">
       {/* Header */}
-      <div className="border-border bg-card border-b px-4 py-2">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <PwCLogo
-              width={100}
-              height={65}
-            />
-          </div>
-          <div className="absolute left-1/2 transform -translate-x-1/2">
-            <h1 className="text-xl font-semibold tracking-tight text-foreground" style={{ fontFamily: 'Arial, Helvetica, sans-serif' }}>
-              PwC Agent Developer Platform
-            </h1>
-          </div>
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2">
-              <span className="text-muted-foreground text-xs">ready</span>
-              <div className="h-1 w-1 rounded-full bg-green-500 dark:bg-green-600"></div>
+      {!hideHeader && (
+        <div className="border-border bg-card border-b px-4 py-2">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <PwCLogo
+                width={100}
+                height={65}
+              />
             </div>
-            <OpenDocumentationButton />
-            <OpenSettingsButton />
-            <ThemeToggle />
-            <UserPopover />
+            <div className="absolute left-1/2 transform -translate-x-1/2">
+              <h1 className="text-xl font-semibold tracking-tight text-foreground" style={{ fontFamily: 'Arial, Helvetica, sans-serif' }}>
+                PwC Agent Developer Platform
+              </h1>
+            </div>
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
+                <span className="text-muted-foreground text-xs">ready</span>
+                <div className="h-1 w-1 rounded-full bg-green-500 dark:bg-green-600"></div>
+              </div>
+              <OpenDocumentationButton />
+              <OpenSettingsButton />
+              <ThemeToggle />
+              <UserPopover />
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Main Content */}
       <div className="flex-1 overflow-y-auto">

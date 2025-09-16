@@ -21,6 +21,7 @@ export const OPEN_SWE_V2_GRAPH_ID = "open-swe-v2";
 export const MANAGER_GRAPH_ID = "manager";
 export const PLANNER_GRAPH_ID = "planner";
 export const PROGRAMMER_GRAPH_ID = "programmer";
+export const SECURITY_AUDITOR_GRAPH_ID = "security-auditor";
 
 export const GITHUB_USER_ID_HEADER = "x-github-user-id";
 export const GITHUB_USER_LOGIN_HEADER = "x-github-user-login";

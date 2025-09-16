@@ -2,6 +2,7 @@ import {
   MANAGER_GRAPH_ID,
   PLANNER_GRAPH_ID,
   PROGRAMMER_GRAPH_ID,
+  SECURITY_AUDITOR_GRAPH_ID,
 } from "@openswe/shared/constants";
 import { ThreadStatus } from "@langchain/langgraph-sdk";
 import { TaskPlan } from "@openswe/shared/open-swe/types";
@@ -42,7 +43,8 @@ export interface ThreadStatusData {
   graph:
     | typeof MANAGER_GRAPH_ID
     | typeof PLANNER_GRAPH_ID
-    | typeof PROGRAMMER_GRAPH_ID;
+    | typeof PROGRAMMER_GRAPH_ID
+    | typeof SECURITY_AUDITOR_GRAPH_ID;
   runId: string;
   threadId: string;
   status: ThreadUIStatus;

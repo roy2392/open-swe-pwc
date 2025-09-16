@@ -34,12 +34,15 @@ function AllThreadsPageContent() {
   const limit = 25;
   const [offset, setOffset] = useState(0);
   const { currentInstallation, installationsLoading } = useGitHubAppProvider();
+  // Default to manager for now, but this could be made configurable
+  const [selectedAssistantId, setSelectedAssistantId] = useState(MANAGER_GRAPH_ID);
+
   const {
     threads,
     isLoading: threadsLoading,
     hasMore,
   } = useThreadsSWR({
-    assistantId: MANAGER_GRAPH_ID,
+    assistantId: selectedAssistantId,
     currentInstallation,
     pagination: {
       limit,

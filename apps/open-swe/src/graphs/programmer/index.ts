@@ -22,6 +22,10 @@ import { graph as reviewerGraph } from "../reviewer/index.js";
 import { getRemainingPlanItems } from "../../utils/current-task.js";
 import { getActivePlanItems } from "@openswe/shared/open-swe/tasks";
 import { createMarkTaskCompletedToolFields } from "@openswe/shared/open-swe/tools";
+import { isLocalMode } from "@openswe/shared/open-swe/local-mode";
+import { createLogger, LogLevel } from "../../utils/logger.js";
+
+const logger = createLogger(LogLevel.INFO, "ProgrammerGraph");
 
 function lastMessagesMissingToolCalls(
   messages: BaseMessage[],
@@ -110,6 +114,7 @@ function routeGenerateActionsOrEnd(
 
   return "generate-action";
 }
+
 
 function routeToReviewOrConclusion(
   state: GraphState,
