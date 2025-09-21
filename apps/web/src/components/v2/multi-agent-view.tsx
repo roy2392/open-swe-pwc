@@ -5,12 +5,11 @@ import { DefaultView } from "./default-view";
 import { useThreadsSWR } from "@/hooks/useThreadsSWR";
 import { GitHubAppProvider, useGitHubAppProvider } from "@/providers/GitHubApp";
 import { Toaster } from "@/components/ui/sonner";
-import {
-  MANAGER_GRAPH_ID,
-  PLANNER_GRAPH_ID,
-  PROGRAMMER_GRAPH_ID,
-  SECURITY_AUDITOR_GRAPH_ID
-} from "@openswe/shared/constants";
+// Constants for graph IDs
+const MANAGER_GRAPH_ID = "manager";
+const PLANNER_GRAPH_ID = "planner";
+const PROGRAMMER_GRAPH_ID = "programmer";
+const SECURITY_AUDITOR_GRAPH_ID = "security-auditor";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { UserPopover } from "@/components/user-popover";

@@ -12,7 +12,9 @@ import { ThreadCard, ThreadCardLoading } from "@/components/v2/thread-card";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { InstallationSelector } from "@/components/github/installation-selector";
 import { GitHubAppProvider, useGitHubAppProvider } from "@/providers/GitHubApp";
-import { MANAGER_GRAPH_ID, SECURITY_AUDITOR_GRAPH_ID } from "@openswe/shared/constants";
+// Constants for graph IDs
+const MANAGER_GRAPH_ID = "manager";
+const SECURITY_AUDITOR_GRAPH_ID = "security-auditor";
 
 // Mock security auditor threads for demo purposes
 const MOCK_SECURITY_THREADS = [
