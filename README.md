@@ -1,4 +1,8 @@
 <div align="center">
+  <img src="static/pwc-logo.png" alt="PwC" width="200">
+
+  <br><br>
+
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="apps/docs/logo/dark.svg">
     <source media="(prefers-color-scheme: light)" srcset="apps/docs/logo/light.svg">
