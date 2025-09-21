@@ -25,10 +25,12 @@ import {
 } from "@langchain/core/messages";
 import {
   DO_NOT_RENDER_ID_PREFIX,
-  PROGRAMMER_GRAPH_ID,
-  PLANNER_GRAPH_ID,
-  SECURITY_AUDITOR_GRAPH_ID,
 } from "@openswe/shared/constants";
+
+// Constants for graph IDs
+const PROGRAMMER_GRAPH_ID = "programmer";
+const PLANNER_GRAPH_ID = "planner";
+const SECURITY_AUDITOR_GRAPH_ID = "security-auditor";
 import { useThreadStatus } from "@/hooks/useThreadStatus";
 import { cn } from "@/lib/utils";
 
