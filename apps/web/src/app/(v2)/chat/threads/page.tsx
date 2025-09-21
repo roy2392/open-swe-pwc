@@ -172,7 +172,7 @@ function AllThreadsPageContent() {
         thread.repository.toLowerCase().includes(searchQuery.toLowerCase());
 
       const matchesStatus =
-        statusFilter === "all" || mockStatusMap[thread.id] === statusFilter;
+        statusFilter === "all" || (mockStatusMap as any)[thread.id] === statusFilter;
 
       return matchesSearch && matchesStatus;
     });
@@ -181,25 +181,25 @@ function AllThreadsPageContent() {
   const groupedThreads = useMemo(() => {
     return {
       running: filteredThreads.filter(
-        (thread: ThreadMetadata) => mockStatusMap[thread.id] === "running",
+        (thread: ThreadMetadata) => (mockStatusMap as any)[thread.id] === "running",
       ),
       completed: filteredThreads.filter(
-        (thread: ThreadMetadata) => mockStatusMap[thread.id] === "completed",
+        (thread: ThreadMetadata) => (mockStatusMap as any)[thread.id] === "completed",
       ),
       failed: filteredThreads.filter(
-        (thread: ThreadMetadata) => mockStatusMap[thread.id] === "failed",
+        (thread: ThreadMetadata) => (mockStatusMap as any)[thread.id] === "failed",
       ),
       pending: filteredThreads.filter(
-        (thread: ThreadMetadata) => mockStatusMap[thread.id] === "pending",
+        (thread: ThreadMetadata) => (mockStatusMap as any)[thread.id] === "pending",
       ),
       idle: filteredThreads.filter(
-        (thread: ThreadMetadata) => mockStatusMap[thread.id] === "idle",
+        (thread: ThreadMetadata) => (mockStatusMap as any)[thread.id] === "idle",
       ),
       paused: filteredThreads.filter(
-        (thread: ThreadMetadata) => mockStatusMap[thread.id] === "paused",
+        (thread: ThreadMetadata) => (mockStatusMap as any)[thread.id] === "paused",
       ),
       error: filteredThreads.filter(
-        (thread: ThreadMetadata) => mockStatusMap[thread.id] === "error",
+        (thread: ThreadMetadata) => (mockStatusMap as any)[thread.id] === "error",
       ),
     };
   }, [filteredThreads, mockStatusMap]);
@@ -367,7 +367,7 @@ function AllThreadsPageContent() {
                         <ThreadCard
                           key={thread.id}
                           thread={thread}
-                          status={mockStatusMap[thread.id]}
+                          status={(mockStatusMap as any)[thread.id]}
                           statusLoading={statusLoading}
                           taskPlan={taskPlanMap[thread.id]}
                         />
@@ -383,7 +383,7 @@ function AllThreadsPageContent() {
                 <ThreadCard
                   key={thread.id}
                   thread={thread}
-                  status={mockStatusMap[thread.id]}
+                  status={(mockStatusMap as any)[thread.id]}
                   statusLoading={statusLoading}
                   taskPlan={taskPlanMap[thread.id]}
                 />

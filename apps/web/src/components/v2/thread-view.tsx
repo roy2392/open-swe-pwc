@@ -494,7 +494,7 @@ export function ThreadView({
                         stream={securityAuditorStream}
                         threadId={securityAuditorSession?.threadId}
                         runId={securityAuditorSession?.runId}
-                        streamName="Security Auditor"
+                        streamName={"Security Auditor" as any}
                       />
                     )}
                   <TokenUsage
