@@ -55,39 +55,55 @@ export async function getRepositoryBranches(
   page: number = 1,
   perPage: number = 30,
 ): Promise<{ branches: Branch[]; hasMore: boolean; totalCount?: number }> {
-  // First, get repository info to ensure we have the default branch
-
-  const repoResponse = await fetch(
-    `${getBaseApiUrl()}github/proxy/repos/${owner}/${repo}`,
-    {
-      headers: {
-        Accept: "application/vnd.github.v3+json",
-        "User-Agent": "OpenSWE-Agent",
+  try {
+    // First, get repository info to ensure we have the default branch
+    const repoResponse = await fetch(
+      `${getBaseApiUrl()}github/proxy/repos/${owner}/${repo}`,
+      {
+        headers: {
+          Accept: "application/vnd.github.v3+json",
+          "User-Agent": "OpenSWE-Agent-Fixed",
+        },
+        credentials: "include",
       },
-    },
-  );
+    );
 
-  let defaultBranch: string | null = null;
-  if (repoResponse.ok) {
-    const repoData = await repoResponse.json();
-    defaultBranch = repoData.default_branch;
-  }
+    let defaultBranch: string | null = null;
+    if (repoResponse.ok) {
+      const repoData = await repoResponse.json();
+      defaultBranch = repoData.default_branch;
+    } else if (repoResponse.status === 400) {
+      // Log helpful debugging info for common auth issues
+      const errorData = await repoResponse.json().catch(() => ({}));
+      console.error('Repository access failed - possible authentication issue:', {
+        status: repoResponse.status,
+        error: errorData,
+        url: `${getBaseApiUrl()}github/proxy/repos/${owner}/${repo}`,
+        hint: 'Check if cookies are being sent properly and NEXT_PUBLIC_API_URL is correct'
+      });
+    }
 
-  // Fetch first 30 branches only
-  const response = await fetch(
-    `${getBaseApiUrl()}github/proxy/repos/${owner}/${repo}/branches?per_page=${perPage}&page=${page}`,
-    {
-      headers: {
-        Accept: "application/vnd.github.v3+json",
-        "User-Agent": "OpenSWE-Agent",
+    // Fetch branches
+    const response = await fetch(
+      `${getBaseApiUrl()}github/proxy/repos/${owner}/${repo}/branches?per_page=${perPage}&page=${page}`,
+      {
+        headers: {
+          Accept: "application/vnd.github.v3+json",
+          "User-Agent": "OpenSWE-Agent-Fixed",
+        },
+        credentials: "include",
       },
-    },
-  );
+    );
 
-  if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(`Failed to fetch branches: ${JSON.stringify(errorData)}`);
-  }
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+
+      if (response.status === 400 && errorData.error?.includes('cookie')) {
+        throw new Error('Authentication failed: GitHub installation cookie missing. Please refresh and try again.');
+      }
+
+      throw new Error(`Failed to fetch branches (${response.status}): ${JSON.stringify(errorData)}`);
+    }
 
   const data = await response.json();
   const branches: Branch[] = Array.isArray(data) ? data : [];
@@ -111,8 +127,9 @@ export async function getRepositoryBranches(
         {
           headers: {
             Accept: "application/vnd.github.v3+json",
-            "User-Agent": "OpenSWE-Agent",
+            "User-Agent": "OpenSWE-Agent-Fixed",
           },
+          credentials: "include",
         },
       );
       if (!defaultBranchResponse.ok) {
@@ -126,11 +143,15 @@ export async function getRepositoryBranches(
     }
   }
 
-  return {
-    branches,
-    hasMore: branches.length >= perPage,
-    totalCount: branches.length,
-  };
+    return {
+      branches,
+      hasMore: branches.length >= perPage,
+      totalCount: branches.length,
+    };
+  } catch (error) {
+    console.error(`Error fetching branches for ${owner}/${repo}:`, error);
+    throw error;
+  }
 }
 
 /**
@@ -145,8 +166,9 @@ export async function getRepository(
     {
       headers: {
         Accept: "application/vnd.github.v3+json",
-        "User-Agent": "OpenSWE-Agent",
+        "User-Agent": "OpenSWE-Agent-Fixed",
       },
+      credentials: "include",
     },
   );
 
@@ -172,8 +194,9 @@ export async function searchBranch(
       {
         headers: {
           Accept: "application/vnd.github.v3+json",
-          "User-Agent": "OpenSWE-Agent",
+          "User-Agent": "OpenSWE-Agent-Fixed",
         },
+        credentials: "include",
       },
     );
 
@@ -247,8 +270,9 @@ export async function getPullRequest(inputs: {
       {
         headers: {
           Accept: "application/vnd.github.v3+json",
-          "User-Agent": "OpenSWE-Agent",
+          "User-Agent": "OpenSWE-Agent-Fixed",
         },
+        credentials: "include",
       },
     );
 

@@ -10,9 +10,17 @@ async function handler(req: NextRequest) {
     GITHUB_INSTALLATION_ID_COOKIE,
   )?.value;
 
+  // Debug logging
+  console.log(`GitHub Proxy Debug: Path: ${path}`);
+  console.log(`GitHub Proxy Debug: Installation ID Cookie: ${installationIdCookie}`);
+  console.log(`GitHub Proxy Debug: All cookies:`, req.cookies.getAll().map(c => `${c.name}=${c.value}`));
+
   if (!installationIdCookie) {
     return NextResponse.json(
-      { error: `"${GITHUB_INSTALLATION_ID_COOKIE}" cookie is required` },
+      { error: `"${GITHUB_INSTALLATION_ID_COOKIE}" cookie is required`, debug: {
+        path,
+        allCookies: req.cookies.getAll().map(c => c.name)
+      } },
       { status: 400 },
     );
   }

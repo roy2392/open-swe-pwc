@@ -4,6 +4,7 @@ export * from "./handle-completed-task.js";
 export * from "./generate-conclusion.js";
 export * from "./open-pr.js";
 export * from "./diagnose-error.js";
+export * from "./smart-error-recovery.js";
 export * from "./request-help.js";
 export * from "./update-plan.js";
 export * from "./summarize-history.js";

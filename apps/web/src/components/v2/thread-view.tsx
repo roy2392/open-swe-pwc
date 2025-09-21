@@ -63,7 +63,7 @@ const joinTokenData = (
   programmerTokenData?: CacheMetrics | ModelTokenData[],
   securityAuditorTokenData?: CacheMetrics | ModelTokenData[],
 ): ModelTokenData[] | CacheMetrics[] => {
-  const allTokenData = [plannerTokenData, programmerTokenData, securityAuditorTokenData].filter(Boolean);
+  const allTokenData = [plannerTokenData, programmerTokenData, securityAuditorTokenData].filter((item): item is CacheMetrics | ModelTokenData[] => Boolean(item));
 
   if (allTokenData.length === 0) {
     return [];

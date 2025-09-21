@@ -11,6 +11,16 @@ module.exports = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        'sans': ['PwC Charter', 'Noto Serif', 'Charter', 'Georgia', 'Times New Roman', 'serif'],
+        'serif': ['PwC Charter', 'Noto Serif', 'Charter', 'Georgia', 'Times New Roman', 'serif'],
+        'charter': ['PwC Charter', 'Noto Serif', 'Charter', 'Georgia', 'Times New Roman', 'serif'],
+      },
+      fontWeight: {
+        'normal': '400',
+        'bold': '700',
+        'black': '900',
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",

@@ -11,6 +11,7 @@ import {
   generateConclusion,
   openPullRequest,
   diagnoseError,
+  smartErrorRecovery,
   requestHelp,
   updatePlan,
   summarizeHistory,
@@ -19,13 +20,10 @@ import {
 import { BaseMessage, isAIMessage } from "@langchain/core/messages";
 import { initializeSandbox } from "../shared/initialize-sandbox.js";
 import { graph as reviewerGraph } from "../reviewer/index.js";
+import { graph as securityAuditorGraph } from "../security-auditor/index.js";
 import { getRemainingPlanItems } from "../../utils/current-task.js";
 import { getActivePlanItems } from "@openswe/shared/open-swe/tasks";
 import { createMarkTaskCompletedToolFields } from "@openswe/shared/open-swe/tools";
-import { isLocalMode } from "@openswe/shared/open-swe/local-mode";
-import { createLogger, LogLevel } from "../../utils/logger.js";
-
-const logger = createLogger(LogLevel.INFO, "ProgrammerGraph");
 
 function lastMessagesMissingToolCalls(
   messages: BaseMessage[],
@@ -136,7 +134,7 @@ const workflow = new StateGraph(GraphAnnotation, GraphConfiguration)
   .addNode("initialize", initializeSandbox)
   .addNode("generate-action", generateAction)
   .addNode("take-action", takeAction, {
-    ends: ["generate-action", "diagnose-error"],
+    ends: ["generate-action", "diagnose-error", "smart-error-recovery"],
   })
   .addNode("update-plan", updatePlan)
   .addNode("handle-completed-task", handleCompletedTask, {
@@ -147,7 +145,7 @@ const workflow = new StateGraph(GraphAnnotation, GraphConfiguration)
     ],
   })
   .addNode("generate-conclusion", generateConclusion, {
-    ends: ["open-pr", END],
+    ends: ["open-pr", "security-audit-subgraph", END],
   })
   .addNode("request-help", requestHelp, {
     ends: ["generate-action", END],
@@ -156,8 +154,10 @@ const workflow = new StateGraph(GraphAnnotation, GraphConfiguration)
     ends: ["generate-conclusion", "reviewer-subgraph"],
   })
   .addNode("reviewer-subgraph", reviewerGraph)
+  .addNode("security-audit-subgraph", securityAuditorGraph)
   .addNode("open-pr", openPullRequest)
   .addNode("diagnose-error", diagnoseError)
+  .addNode("smart-error-recovery", smartErrorRecovery)
   .addNode("summarize-history", summarizeHistory)
   .addEdge(START, "initialize")
   .addEdge("initialize", "generate-action")
@@ -171,6 +171,8 @@ const workflow = new StateGraph(GraphAnnotation, GraphConfiguration)
   ])
   .addEdge("update-plan", "generate-action")
   .addEdge("diagnose-error", "generate-action")
+  .addEdge("smart-error-recovery", "generate-action")
+  .addEdge("security-audit-subgraph", "open-pr")
   .addConditionalEdges("reviewer-subgraph", routeGenerateActionsOrEnd, [
     "generate-conclusion",
     "generate-action",
@@ -180,4 +182,4 @@ const workflow = new StateGraph(GraphAnnotation, GraphConfiguration)
 
 // Zod types are messed up
 export const graph = workflow.compile() as any;
-graph.name = "Open SWE - Programmer";
+graph.name = "PwC Code Assistant - Development Agent";

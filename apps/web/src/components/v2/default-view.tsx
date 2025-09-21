@@ -32,7 +32,6 @@ import { threadsToMetadata } from "@/lib/thread-utils";
 import { Settings, BookOpen } from "lucide-react";
 import NextLink from "next/link";
 import { PwCLogo } from "../icons/pwc-logo";
-import { OpenSWEIcon } from "../icons/openswe-icon";
 import { DEFAULT_CONFIG_KEY, useConfigStore } from "@/hooks/useConfigStore";
 
 function OpenSettingsButton() {
@@ -230,24 +229,6 @@ export function DefaultView({ threads, threadsLoading, hideHeader = false }: Def
                       <Eye className="size-4" />
                     ) : (
                       <EyeOff className="size-4" />
-                    )}
-                  </TooltipIconButton>
-                  <TooltipIconButton
-                    variant={customFramework ? "default" : "ghost"}
-                    tooltip="Use LangGraph Engineer when writing LangGraph code for better results"
-                    className={cn(
-                      "transition-colors duration-200",
-                      customFramework
-                        ? "bg-primary hover:bg-primary/90"
-                        : "text-muted-foreground hover:text-foreground",
-                    )}
-                    onClick={() => setCustomFramework((prev) => !prev)}
-                    side="bottom"
-                  >
-                    {customFramework ? (
-                      <OpenSWEIcon className="size-5" />
-                    ) : (
-                      <OpenSWEIcon className="size-5" />
                     )}
                   </TooltipIconButton>
                 </div>

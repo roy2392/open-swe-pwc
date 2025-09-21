@@ -12,7 +12,71 @@ import { ThreadCard, ThreadCardLoading } from "@/components/v2/thread-card";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { InstallationSelector } from "@/components/github/installation-selector";
 import { GitHubAppProvider, useGitHubAppProvider } from "@/providers/GitHubApp";
-import { MANAGER_GRAPH_ID } from "@openswe/shared/constants";
+import { MANAGER_GRAPH_ID, SECURITY_AUDITOR_GRAPH_ID } from "@openswe/shared/constants";
+
+// Mock security auditor threads for demo purposes
+const MOCK_SECURITY_THREADS = [
+  {
+    thread_id: "mock-security-1",
+    created_at: "2024-01-15T10:30:00Z",
+    updated_at: "2024-01-15T11:45:00Z",
+    metadata: {
+      title: "🔒 Authentication Security Audit",
+      repository: "pwc-corp/auth-service",
+      installation_name: "PwC",
+      graph_id: "security-auditor",
+    },
+    values: {},
+  },
+  {
+    thread_id: "mock-security-2",
+    created_at: "2024-01-14T14:20:00Z",
+    updated_at: "2024-01-14T16:30:00Z",
+    metadata: {
+      title: "📦 Dependency Vulnerability Scan",
+      repository: "pwc-corp/web-portal",
+      installation_name: "PwC",
+      graph_id: "security-auditor",
+    },
+    values: {},
+  },
+  {
+    thread_id: "mock-security-3",
+    created_at: "2024-01-13T09:15:00Z",
+    updated_at: "2024-01-13T12:00:00Z",
+    metadata: {
+      title: "🌐 API Security Assessment",
+      repository: "pwc-corp/api-gateway",
+      installation_name: "PwC",
+      graph_id: "security-auditor",
+    },
+    values: {},
+  },
+  {
+    thread_id: "mock-security-4",
+    created_at: "2024-01-12T16:45:00Z",
+    updated_at: "2024-01-12T18:20:00Z",
+    metadata: {
+      title: "🔐 OAuth Implementation Review",
+      repository: "pwc-corp/identity-provider",
+      installation_name: "PwC",
+      graph_id: "security-auditor",
+    },
+    values: {},
+  },
+  {
+    thread_id: "mock-security-5",
+    created_at: "2024-01-11T11:00:00Z",
+    updated_at: "2024-01-11T15:30:00Z",
+    metadata: {
+      title: "🛡️ Infrastructure Security Audit",
+      repository: "pwc-corp/infrastructure",
+      installation_name: "PwC",
+      graph_id: "security-auditor",
+    },
+    values: {},
+  },
+];
 import { useThreadsStatus } from "@/hooks/useThreadsStatus";
 import { cn } from "@/lib/utils";
 import { threadsToMetadata } from "@/lib/thread-utils";
@@ -54,7 +118,13 @@ function AllThreadsPageContent() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<FilterStatus>("all");
 
-  const threadsMetadata = useMemo(() => threadsToMetadata(threads), [threads]);
+  const threadsMetadata = useMemo(() => {
+    // Use mock data for security auditor when no real threads exist
+    if (selectedAssistantId === SECURITY_AUDITOR_GRAPH_ID && (!threads || threads.length === 0)) {
+      return threadsToMetadata(MOCK_SECURITY_THREADS as any);
+    }
+    return threadsToMetadata(threads);
+  }, [threads, selectedAssistantId]);
 
   const threadIds = threadsMetadata.map((thread) => thread.id);
 
@@ -65,6 +135,36 @@ function AllThreadsPageContent() {
     isLoading: statusLoading,
   } = useThreadsStatus(threadIds, threads);
 
+  // Mock status data for security auditor threads
+  const mockStatusMap = useMemo(() => {
+    if (selectedAssistantId === SECURITY_AUDITOR_GRAPH_ID && (!threads || threads.length === 0)) {
+      return {
+        "mock-security-1": "completed",
+        "mock-security-2": "running",
+        "mock-security-3": "completed",
+        "mock-security-4": "running",
+        "mock-security-5": "failed",
+      };
+    }
+    return statusMap;
+  }, [selectedAssistantId, threads, statusMap]);
+
+  const mockStatusCounts = useMemo(() => {
+    if (selectedAssistantId === SECURITY_AUDITOR_GRAPH_ID && (!threads || threads.length === 0)) {
+      return {
+        all: 5,
+        running: 2,
+        completed: 2,
+        failed: 1,
+        pending: 0,
+        idle: 0,
+        paused: 0,
+        error: 0,
+      };
+    }
+    return statusCounts;
+  }, [selectedAssistantId, threads, statusCounts]);
+
   const filteredThreads = useMemo(() => {
     return threadsMetadata.filter((thread: ThreadMetadata) => {
       const matchesSearch =
@@ -72,37 +172,37 @@ function AllThreadsPageContent() {
         thread.repository.toLowerCase().includes(searchQuery.toLowerCase());
 
       const matchesStatus =
-        statusFilter === "all" || statusMap[thread.id] === statusFilter;
+        statusFilter === "all" || mockStatusMap[thread.id] === statusFilter;
 
       return matchesSearch && matchesStatus;
     });
-  }, [threadsMetadata, searchQuery, statusFilter, statusMap]);
+  }, [threadsMetadata, searchQuery, statusFilter, mockStatusMap]);
 
   const groupedThreads = useMemo(() => {
     return {
       running: filteredThreads.filter(
-        (thread: ThreadMetadata) => statusMap[thread.id] === "running",
+        (thread: ThreadMetadata) => mockStatusMap[thread.id] === "running",
       ),
       completed: filteredThreads.filter(
-        (thread: ThreadMetadata) => statusMap[thread.id] === "completed",
+        (thread: ThreadMetadata) => mockStatusMap[thread.id] === "completed",
       ),
       failed: filteredThreads.filter(
-        (thread: ThreadMetadata) => statusMap[thread.id] === "failed",
+        (thread: ThreadMetadata) => mockStatusMap[thread.id] === "failed",
       ),
       pending: filteredThreads.filter(
-        (thread: ThreadMetadata) => statusMap[thread.id] === "pending",
+        (thread: ThreadMetadata) => mockStatusMap[thread.id] === "pending",
       ),
       idle: filteredThreads.filter(
-        (thread: ThreadMetadata) => statusMap[thread.id] === "idle",
+        (thread: ThreadMetadata) => mockStatusMap[thread.id] === "idle",
       ),
       paused: filteredThreads.filter(
-        (thread: ThreadMetadata) => statusMap[thread.id] === "paused",
+        (thread: ThreadMetadata) => mockStatusMap[thread.id] === "paused",
       ),
       error: filteredThreads.filter(
-        (thread: ThreadMetadata) => statusMap[thread.id] === "error",
+        (thread: ThreadMetadata) => mockStatusMap[thread.id] === "error",
       ),
     };
-  }, [filteredThreads, statusMap]);
+  }, [filteredThreads, mockStatusMap]);
 
   // Show loading state if threads/status/installation requests are loading, and there are no
   // threads to display (conditional of the status filter)
@@ -139,7 +239,7 @@ function AllThreadsPageContent() {
             </div>
           </div>
           <div className="absolute left-1/2 transform -translate-x-1/2">
-            <h1 className="text-xl font-semibold tracking-tight text-foreground" style={{ fontFamily: 'Arial, Helvetica, sans-serif' }}>
+            <h1 className="text-xl font-black tracking-tight text-foreground">
               PwC Agent Developer Platform
             </h1>
           </div>
@@ -169,9 +269,39 @@ function AllThreadsPageContent() {
               className="border-border bg-background text-foreground placeholder:text-muted-foreground pl-10"
             />
           </div>
-          <div className="flex items-center gap-1">
-            <Filter className="text-muted-foreground h-4 w-4" />
-            <span className="text-muted-foreground mr-2 text-xs">Filter:</span>
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-1">
+              <span className="text-muted-foreground mr-2 text-xs">Assistant:</span>
+              <Button
+                variant={selectedAssistantId === MANAGER_GRAPH_ID ? "secondary" : "ghost"}
+                size="sm"
+                className={cn(
+                  "h-7 text-xs",
+                  selectedAssistantId === MANAGER_GRAPH_ID
+                    ? "bg-muted text-foreground"
+                    : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                )}
+                onClick={() => setSelectedAssistantId(MANAGER_GRAPH_ID)}
+              >
+                Manager
+              </Button>
+              <Button
+                variant={selectedAssistantId === SECURITY_AUDITOR_GRAPH_ID ? "secondary" : "ghost"}
+                size="sm"
+                className={cn(
+                  "h-7 text-xs",
+                  selectedAssistantId === SECURITY_AUDITOR_GRAPH_ID
+                    ? "bg-muted text-foreground"
+                    : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                )}
+                onClick={() => setSelectedAssistantId(SECURITY_AUDITOR_GRAPH_ID)}
+              >
+                🔒 Security Auditor
+              </Button>
+            </div>
+            <div className="flex items-center gap-1">
+              <Filter className="text-muted-foreground h-4 w-4" />
+              <span className="text-muted-foreground mr-2 text-xs">Filter:</span>
             {(
               [
                 "all",
@@ -203,10 +333,11 @@ function AllThreadsPageContent() {
                   variant="secondary"
                   className="bg-muted/70 text-muted-foreground ml-1 text-xs"
                 >
-                  {statusCounts[status]}
+                  {mockStatusCounts[status]}
                 </Badge>
               </Button>
             ))}
+            </div>
           </div>
         </div>
       </div>
@@ -236,7 +367,7 @@ function AllThreadsPageContent() {
                         <ThreadCard
                           key={thread.id}
                           thread={thread}
-                          status={statusMap[thread.id]}
+                          status={mockStatusMap[thread.id]}
                           statusLoading={statusLoading}
                           taskPlan={taskPlanMap[thread.id]}
                         />
@@ -252,7 +383,7 @@ function AllThreadsPageContent() {
                 <ThreadCard
                   key={thread.id}
                   thread={thread}
-                  status={statusMap[thread.id]}
+                  status={mockStatusMap[thread.id]}
                   statusLoading={statusLoading}
                   taskPlan={taskPlanMap[thread.id]}
                 />

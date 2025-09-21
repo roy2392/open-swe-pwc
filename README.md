@@ -2,46 +2,160 @@
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="apps/docs/logo/dark.svg">
     <source media="(prefers-color-scheme: light)" srcset="apps/docs/logo/light.svg">
-    <img src="apps/docs/logo/dark.svg" alt="Open SWE Logo" width="35%">
+    <img src="apps/docs/logo/dark.svg" alt="PwC Code Assistant Logo" width="35%">
   </picture>
 </div>
 
 <div align="center">
-  <h1>Open SWE - An Open-Source Asynchronous Coding Agent</h1>
+  <h1>PwC Code Assistant - Enterprise AI-Powered Development Platform</h1>
 </div>
 
-Open SWE is an open-source cloud-based asynchronous coding agent built with [LangGraph](https://langchain-ai.github.io/langgraphjs/). It autonomously understands codebases, plans solutions, and executes code changes across entire repositories—from initial planning to opening pull requests.
+PwC Code Assistant is an enterprise-grade AI-powered development platform built on advanced asynchronous coding agent technology. Developed by PwC's advanced AI team, it autonomously understands codebases, plans solutions, and executes code changes across entire repositories—from initial planning to opening pull requests with built-in security auditing.
 
 > [!TIP]
-> Try out Open SWE yourself using our [public demo](https://swe.langchain.com)!
+> This is an enterprise-grade customization of the Open SWE platform, tailored specifically for PwC's development workflows and security requirements.
 >
-> **Note: you're required to set your own LLM API keys to use the demo.**
+> **Note: you're required to set your own LLM API keys to use the platform.**
 
 > [!NOTE]
-> 📚 See the **Open SWE documentation [here](https://docs.langchain.com/labs/swe/)**
+> 📚 Built on the foundation of Open SWE with enhanced security auditing capabilities
 >
-> 💬 Read the **announcement blog post [here](https://blog.langchain.com/introducing-open-swe-an-open-source-asynchronous-coding-agent/)**
+> 🔒 Features PwC's specialized Security Auditor agent for automated code review
 >
-> 📺 Watch the **announcement video [here](https://youtu.be/TaYVvXbOs8c)**
+> 🚀 Optimized for enterprise development workflows and compliance
 
 # Features
 
-![UI Screenshot](./static/ui-screenshot.png)
+![PwC Code Assistant Interface](./static/pwc-code-assistant-screenshot.png)
 
-- 📝 **Planning**: Open SWE has a dedicated planning step which allows it to deeply understand complex codebases and nuanced tasks. You're also given the ability to accept, edit, or reject the proposed plan before it's executed.
-- 🤝 **Human in the loop**: With Open SWE, you can send it messages while it's running (both during the planning and execution steps). This allows for giving real time feedback and instructions without having to interrupt the process.
-- 🏃 **Parallel Execution**: You can run as many Open SWE tasks as you want in parallel! Since it runs in a sandbox environment in the cloud, you're not limited by the number of tasks you can run at once.
-- 🧑‍💻 **End to end task management**: Open SWE will automatically create GitHub issues for tasks, and create pull requests which will close the issue when implementation is complete.
+## Core Capabilities
+
+- 📝 **Strategic Planning**: PwC Code Assistant features an advanced planning agent that deeply analyzes complex codebases and creates comprehensive implementation strategies. You maintain full control to accept, edit, or reject proposed plans before execution.
+- 🔒 **Security-First Development**: Integrated Security Auditor agent automatically scans all code changes for vulnerabilities, ensuring compliance with enterprise security standards.
+- 🤝 **Human-in-the-Loop Architecture**: Maintain real-time interaction during both planning and execution phases, allowing for immediate feedback and course correction without interrupting the workflow.
+- 🏃 **Enterprise-Scale Parallel Execution**: Run multiple development tasks simultaneously in isolated sandbox environments, with no limitations on concurrent operations.
+- 🧑‍💻 **Complete Development Lifecycle**: Automatically manage GitHub issues, create pull requests, and conduct security audits—providing end-to-end task management from conception to deployment.
+
+## Specialized Agents
+
+### 🧠 Development Agent
+Intelligent development assistant created by PwC's advanced AI team, capable of understanding complex business requirements and implementing robust solutions.
+
+### 📋 Strategic Planner
+PwC's strategic code planning assistant that creates detailed implementation roadmaps considering both technical and business requirements.
+
+### 👔 Project Manager
+Intelligent AI software engineering coordinator that orchestrates multiple agents and ensures project alignment with enterprise standards.
+
+### 🛡️ Security Auditor
+PwC's specialized cybersecurity analyst that performs automated code reviews, vulnerability scanning, and compliance verification.
 
 
 ## Usage
 
-Open SWE can be used in multiple ways:
+PwC Code Assistant can be deployed and used in multiple ways:
 
-- 🖥️ **From the UI**. You can create, manage and execute Open SWE tasks from the [web application](https://swe.langchain.com). See the ['From the UI' page](https://docs.langchain.com/labs/swe/usage/ui) in the docs for more information.
-- 📝 **From GitHub**. You can start Open SWE tasks directly from GitHub issues simply by adding a label `open-swe`, or `open-swe-auto` (adding `-auto` will cause Open SWE to automatically accept the plan, requiring no intervention from you). For enhanced performance on complex tasks, use `open-swe-max` or `open-swe-max-auto` labels which utilize Claude Opus 4.1 for both planning and programming. See the ['From GitHub' page](https://docs.langchain.com/labs/swe/usage/github) in the docs for more information.
+### 🖥️ Web Interface
+Access the full-featured web application to create, manage, and execute development tasks with real-time monitoring and control.
 
-# Documentation
+### 📝 GitHub Integration
+Trigger PwC Code Assistant directly from GitHub issues using specialized labels:
+- `pwc-assist`: Standard assistance with manual plan approval
+- `pwc-assist-auto`: Automatic plan execution without manual intervention
+- `pwc-assist-max`: Enhanced performance mode using Claude Opus 4.1
+- `pwc-assist-max-auto`: Maximum performance with automatic execution
 
-To get started using Open SWE locally, see the [documentation here](https://docs.langchain.com/labs/swe/).
+### 🔧 Local Development
+
+#### Prerequisites
+- Node.js 18+
+- npm or yarn
+- Git
+- Valid API keys for your preferred LLM provider
+
+#### Quick Start
+
+```bash
+# Clone the repository
+git clone https://github.com/your-org/pwc-code-assistant.git
+cd pwc-code-assistant
+
+# Install dependencies
+npm install
+
+# Configure environment variables
+cp .env.example .env
+# Edit .env with your API keys and configuration
+
+# Run development servers
+npm run dev
+```
+
+#### Environment Configuration
+
+Create a `.env` file with the following variables:
+
+```env
+# Frontend configuration
+NEXT_PUBLIC_API_URL=http://localhost:3002/api
+
+# LLM Provider Keys (choose one or more)
+ANTHROPIC_API_KEY=your_anthropic_key
+OPENAI_API_KEY=your_openai_key
+
+# GitHub Integration
+GITHUB_TOKEN=your_github_token
+GITHUB_WEBHOOK_SECRET=your_webhook_secret
+
+# Security Configuration
+ENABLE_SECURITY_AUDIT=true
+SECURITY_SCAN_LEVEL=strict
+```
+
+## Architecture
+
+PwC Code Assistant is built with a microservices architecture:
+
+- **Frontend**: Next.js application (Port 3002)
+- **Backend API**: LangGraph-powered agent orchestration (Port 2024)
+- **Documentation**: Mintlify docs (Port 3003)
+- **Agents**: Modular, specialized AI agents for different aspects of development
+
+## Development Commands
+
+```bash
+npm run dev           # Start all services
+npm run clean         # Clean build artifacts
+npm run validate-env  # Validate environment configuration
+npm run test         # Run test suite
+npm run build        # Build for production
+```
+
+## Security & Compliance
+
+PwC Code Assistant includes enterprise-grade security features:
+
+- 🔐 Automated vulnerability scanning on all code changes
+- 📊 Compliance verification against enterprise standards
+- 🛡️ Built-in security auditing agent
+- 🔍 Real-time threat detection and mitigation
+- 📝 Detailed security reports and recommendations
+
+## Contributing
+
+We welcome contributions that enhance the platform's capabilities while maintaining enterprise security standards. Please see our [Contributing Guidelines](CONTRIBUTING.md) for more information.
+
+## License
+
+This project is based on Open SWE and customized for PwC's enterprise requirements. See [LICENSE](LICENSE) for details.
+
+## Support
+
+For support, please contact the PwC Development Team or create an issue in the GitHub repository.
+
+---
+
+<div align="center">
+  <sub>Built with ❤️ by PwC's Advanced AI Team</sub>
+</div>
 

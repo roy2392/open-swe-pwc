@@ -2,6 +2,34 @@
 
 @plugin "tailwindcss-animate";
 
+/* PwC ITC Charter Black Font */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,100..900;1,100..900&display=swap');
+
+/* Fallback font stack with ITC Charter alternatives */
+@font-face {
+  font-family: 'PwC Charter';
+  src: local('Charter Black'), local('Charter-Black'), local('ITCCharter-Black');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'PwC Charter';
+  src: local('Charter Bold'), local('Charter-Bold'), local('ITCCharter-Bold');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'PwC Charter';
+  src: local('Charter'), local('Charter-Regular'), local('ITCCharter-Regular');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 :root {
@@ -117,10 +145,26 @@
 @layer base {
   * {
     @apply border-border outline-ring/50;
+    font-family: 'PwC Charter', 'Noto Serif', Charter, Georgia, 'Times New Roman', serif !important;
+    font-weight: 900 !important; /* Charter Black for all text */
   }
 
   body {
     @apply bg-background text-foreground;
+    font-family: 'PwC Charter', 'Noto Serif', Charter, Georgia, 'Times New Roman', serif;
+    font-weight: 900; /* Default to Charter Black weight */
+  }
+
+  /* Ensure all headings use Charter Black */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'PwC Charter', 'Noto Serif', Charter, Georgia, 'Times New Roman', serif !important;
+    font-weight: 900 !important;
+  }
+
+  /* Apply Charter Black to all text elements */
+  p, span, div, button, input, textarea, label, a {
+    font-family: 'PwC Charter', 'Noto Serif', Charter, Georgia, 'Times New Roman', serif !important;
+    font-weight: 900 !important;
   }
 
   :root {

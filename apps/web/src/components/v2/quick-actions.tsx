@@ -32,6 +32,83 @@ const DEV_README_PROMPT = `Please add a new callout to the root readme in the re
 "Welcome to Open SWE!"
 Make it a 'tip' callout`;
 
+const SECURITY_AUDIT_PROMPT = `As a PwC Security Auditor, perform a comprehensive security audit of this repository. Please analyze the codebase for:
+
+**Security Vulnerabilities:**
+- SQL injection vulnerabilities
+- Cross-site scripting (XSS) vulnerabilities
+- Authentication and authorization flaws
+- Insecure direct object references
+- Security misconfigurations
+
+**Code Quality & Best Practices:**
+- Input validation and sanitization
+- Error handling and information disclosure
+- Secure coding practices
+- Dependency vulnerabilities
+- Secret management
+
+**Compliance & Standards:**
+- Industry security standards compliance
+- Data protection requirements
+- Access control implementations
+
+Please create a detailed security report with findings, risk levels, and remediation recommendations. Focus on actionable insights that can improve the security posture of the application.`;
+
+const DEPENDENCY_SECURITY_PROMPT = `Perform a thorough security analysis of all project dependencies. Check for:
+
+**Vulnerability Assessment:**
+- Known security vulnerabilities in dependencies
+- Outdated packages with security patches available
+- Transitive dependency risks
+- License compliance issues
+
+**Recommendations:**
+- Priority updates for critical security vulnerabilities
+- Alternative packages for high-risk dependencies
+- Best practices for dependency management
+- Security monitoring setup
+
+Generate a dependency security report with specific version updates and mitigation strategies.`;
+
+const AUTHENTICATION_REVIEW_PROMPT = `Review the authentication and authorization implementation in this codebase. Analyze:
+
+**Authentication Security:**
+- Password policies and hashing mechanisms
+- Session management
+- Multi-factor authentication implementation
+- JWT token security
+- OAuth/SAML configurations
+
+**Authorization Controls:**
+- Role-based access control (RBAC)
+- Principle of least privilege
+- API endpoint protection
+- Data access controls
+
+Provide specific recommendations to strengthen authentication and authorization mechanisms.`;
+
+const API_SECURITY_AUDIT_PROMPT = `Conduct a comprehensive API security audit focusing on:
+
+**API Security Assessment:**
+- Input validation and parameter tampering
+- Rate limiting and DDoS protection
+- API authentication mechanisms
+- CORS configuration
+- Error handling and information leakage
+
+**REST/GraphQL Security:**
+- Endpoint security analysis
+- Query complexity analysis (GraphQL)
+- Data exposure risks
+- API versioning security
+
+**Documentation & Testing:**
+- Security testing implementation
+- API documentation security considerations
+
+Generate an API security assessment with prioritized recommendations for hardening.`;
+
 function DevReadmePromptQuickAction({
   setQuickActionPrompt,
 }: QuickActionsProps) {
@@ -70,6 +147,86 @@ function AgentsMarkdownQuickAction({
         </CardTitle>
         <CardDescription className="text-muted-foreground text-xs">
           Generate an AGENTS.md file for the repository.
+        </CardDescription>
+      </CardHeader>
+    </Card>
+  );
+}
+
+function SecurityAuditQuickAction({
+  setQuickActionPrompt,
+}: QuickActionsProps) {
+  return (
+    <Card
+      onClick={() => setQuickActionPrompt(SECURITY_AUDIT_PROMPT)}
+      className="border-border bg-card hover:bg-muted/30 dark:hover:bg-muted/20 hover:shadow-primary/2 cursor-pointer py-3 transition-all duration-200 hover:shadow-sm"
+    >
+      <CardHeader className="px-3">
+        <CardTitle className="text-foreground text-sm">
+          🔒 Security Audit
+        </CardTitle>
+        <CardDescription className="text-muted-foreground text-xs">
+          Comprehensive security vulnerability assessment.
+        </CardDescription>
+      </CardHeader>
+    </Card>
+  );
+}
+
+function DependencySecurityQuickAction({
+  setQuickActionPrompt,
+}: QuickActionsProps) {
+  return (
+    <Card
+      onClick={() => setQuickActionPrompt(DEPENDENCY_SECURITY_PROMPT)}
+      className="border-border bg-card hover:bg-muted/30 dark:hover:bg-muted/20 hover:shadow-primary/2 cursor-pointer py-3 transition-all duration-200 hover:shadow-sm"
+    >
+      <CardHeader className="px-3">
+        <CardTitle className="text-foreground text-sm">
+          📦 Dependency Security
+        </CardTitle>
+        <CardDescription className="text-muted-foreground text-xs">
+          Analyze dependencies for security vulnerabilities.
+        </CardDescription>
+      </CardHeader>
+    </Card>
+  );
+}
+
+function AuthenticationReviewQuickAction({
+  setQuickActionPrompt,
+}: QuickActionsProps) {
+  return (
+    <Card
+      onClick={() => setQuickActionPrompt(AUTHENTICATION_REVIEW_PROMPT)}
+      className="border-border bg-card hover:bg-muted/30 dark:hover:bg-muted/20 hover:shadow-primary/2 cursor-pointer py-3 transition-all duration-200 hover:shadow-sm"
+    >
+      <CardHeader className="px-3">
+        <CardTitle className="text-foreground text-sm">
+          🔐 Authentication Review
+        </CardTitle>
+        <CardDescription className="text-muted-foreground text-xs">
+          Review authentication and authorization security.
+        </CardDescription>
+      </CardHeader>
+    </Card>
+  );
+}
+
+function ApiSecurityAuditQuickAction({
+  setQuickActionPrompt,
+}: QuickActionsProps) {
+  return (
+    <Card
+      onClick={() => setQuickActionPrompt(API_SECURITY_AUDIT_PROMPT)}
+      className="border-border bg-card hover:bg-muted/30 dark:hover:bg-muted/20 hover:shadow-primary/2 cursor-pointer py-3 transition-all duration-200 hover:shadow-sm"
+    >
+      <CardHeader className="px-3">
+        <CardTitle className="text-foreground text-sm">
+          🌐 API Security Audit
+        </CardTitle>
+        <CardDescription className="text-muted-foreground text-xs">
+          Comprehensive API security assessment.
         </CardDescription>
       </CardHeader>
     </Card>
@@ -126,6 +283,18 @@ export function QuickActions({ setQuickActionPrompt }: QuickActionsProps) {
           setQuickActionPrompt={setQuickActionPrompt}
         />
         <AgentsMarkdownQuickAction
+          setQuickActionPrompt={setQuickActionPrompt}
+        />
+        <SecurityAuditQuickAction
+          setQuickActionPrompt={setQuickActionPrompt}
+        />
+        <DependencySecurityQuickAction
+          setQuickActionPrompt={setQuickActionPrompt}
+        />
+        <AuthenticationReviewQuickAction
+          setQuickActionPrompt={setQuickActionPrompt}
+        />
+        <ApiSecurityAuditQuickAction
           setQuickActionPrompt={setQuickActionPrompt}
         />
         <RepositoryTemplateQuickAction

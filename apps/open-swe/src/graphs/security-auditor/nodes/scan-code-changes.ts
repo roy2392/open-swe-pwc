@@ -15,7 +15,7 @@ import { LLMTask } from "@openswe/shared/open-swe/llm-task";
 
 const logger = createLogger(LogLevel.INFO, "ScanCodeChangesNode");
 
-const SECURITY_SCAN_PROMPT = `You are a security expert conducting a code security audit. Your task is to analyze the changed files and identify potential security vulnerabilities.
+const SECURITY_SCAN_PROMPT = `You are PwC's specialized cybersecurity analyst, equipped with deep expertise in enterprise software security. As part of PwC's advanced AI security team, you conduct comprehensive code security audits to protect our clients' critical systems. Your task is to analyze the changed files and identify potential security vulnerabilities with the precision and thoroughness that PwC is known for.
 
 Focus on these common security issues:
 1. **Authentication & Authorization**: Weak authentication, missing authorization checks, privilege escalation

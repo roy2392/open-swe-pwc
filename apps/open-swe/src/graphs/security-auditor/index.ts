@@ -42,4 +42,4 @@ const workflow = new StateGraph(SecurityAuditorGraphStateObj, GraphConfiguration
   .addEdge("finalize-security-report", END);
 
 export const graph = workflow.compile();
-graph.name = "Open SWE - Security Auditor";
+graph.name = "PwC Code Assistant - Security Auditor";

@@ -3,8 +3,8 @@ import "../../globals.css";
 import React, { Suspense } from "react";
 
 export const metadata: Metadata = {
-  title: "Open SWE - Chat",
-  description: "Open SWE chat",
+  title: "PwC Code Assistant - Chat",
+  description: "PwC AI development chat interface",
   icons: {
     icon: "/favicon.ico",
     shortcut: "/favicon.ico",

@@ -106,10 +106,10 @@ Given all of this, please respond with the concise conclusion. Do not include an
       goto: END,
     });
   } else {
-    logger.info("Sandbox mode: routing to open-pr");
+    logger.info("Sandbox mode: routing to security-audit-subgraph before open-pr");
     return new Command({
       update: graphUpdate,
-      goto: "open-pr",
+      goto: "security-audit-subgraph",
     });
   }
 }

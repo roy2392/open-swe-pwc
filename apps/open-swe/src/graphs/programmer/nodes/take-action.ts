@@ -34,7 +34,7 @@ import { createInstallDependenciesTool } from "../../../tools/install-dependenci
 import { isLocalMode } from "@openswe/shared/open-swe/local-mode";
 import { createGrepTool } from "../../../tools/grep.js";
 import { getMcpTools } from "../../../utils/mcp-client.js";
-import { shouldDiagnoseError } from "../../../utils/tool-message-error.js";
+import { shouldDiagnoseError, shouldUseSmartRecovery } from "../../../utils/tool-message-error.js";
 import { getGitHubTokensFromConfig } from "../../../utils/github-tokens.js";
 import { processToolCallContent } from "../../../utils/tool-output-processing.js";
 import { getActiveTask } from "@openswe/shared/open-swe/tasks";
@@ -271,10 +271,9 @@ export async function takeAction(
     }
   }
 
-  const shouldRouteDiagnoseNode = shouldDiagnoseError([
-    ...state.internalMessages,
-    ...toolCallResults,
-  ]);
+  const allMessages = [...state.internalMessages, ...toolCallResults];
+  const shouldRouteDiagnoseNode = shouldDiagnoseError(allMessages);
+  const shouldUseSmartRecoveryNode = shouldRouteDiagnoseNode && shouldUseSmartRecovery(allMessages);
 
   const codebaseTree = await getCodebaseTree(config);
   // If the codebase tree failed to generate, fallback to the previous codebase tree, or if that's not defined, use the failed to generate message.
@@ -323,8 +322,14 @@ export async function takeAction(
     }),
     ...allStateUpdates,
   };
+  // Determine which error recovery strategy to use
+  let nextNode = "generate-action";
+  if (shouldRouteDiagnoseNode) {
+    nextNode = shouldUseSmartRecoveryNode ? "smart-error-recovery" : "diagnose-error";
+  }
+
   return new Command({
-    goto: shouldRouteDiagnoseNode ? "diagnose-error" : "generate-action",
+    goto: nextNode,
     update: commandUpdate,
   });
 }

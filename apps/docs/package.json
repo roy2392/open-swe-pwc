@@ -1,7 +1,7 @@
 {
   "name": "@openswe/docs",
-  "author": "LangChain",
-  "repository": "https://github.com/langchain-ai/open-swe",
+  "author": "PwC Development Team",
+  "repository": "https://github.com/pwc/open-swe-pwc",
   "private": true,
   "scripts": {
     "dev": "mint dev",

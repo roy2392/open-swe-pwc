@@ -1,6 +1,6 @@
 {
   "name": "open-swe",
-  "author": "LangChain",
+  "author": "PwC Development Team",
   "private": true,
   "workspaces": [
     "apps/*",
@@ -15,7 +15,8 @@
     "format:check": "turbo format:check",
     "lint": "turbo lint",
     "lint:fix": "turbo lint:fix",
-    "test": "turbo test"
+    "test": "turbo test",
+    "validate-env": "node scripts/validate-env.js"
   },
   "devDependencies": {
     "turbo": "^2.5.0",
