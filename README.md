@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="static/pwc-logo.png" alt="PwC" width="200">
+  <img src="static/pwc-logo.svg" alt="PwC" width="250">
 
   <br><br>
 
